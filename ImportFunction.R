@@ -1,4 +1,12 @@
 ##### Import personal functions
+# Meta-function I copy paste in any other script to import functions in these folders
+# I update it each time I add a new functions folder
+
+# ToImport: Insert the name of the function (without .R).
+# TypeFun: Stat, Graph, or Table at the moment.
+# FoldLocation: Default is my folderlocation, change it with yours.
+
+
 Importer <- function(ToImport, TypeFun = "Stat", FoldLocation = "C:/Users/fwyck/OneDrive/Documents/Project_DS/Project_R_Function/MyFunctions"){
 
 ## Type of functions  
