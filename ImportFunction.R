@@ -1,4 +1,4 @@
-##### Import personnal functions
+##### Import personal functions
 LocationStat <- "~/Project_DS/Project_RFunction/MyFunctions/StatFunctions"
 
 dir()
