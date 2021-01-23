@@ -4,7 +4,7 @@
 
 # ToImport: Insert the name of the function (without .R).
 # TypeFun: Stat, Graph, or Table at the moment.
-# FoldLocation: Default is my folderlocation, change it with yours.
+# FoldLocation: Default is my folder location, change it with yours.
 
 
 Importer <- function(ToImport, TypeFun = "Stat", FoldLocation = "C:/Users/fwyck/OneDrive/Documents/Project_DS/Project_R_Function/MyFunctions"){
