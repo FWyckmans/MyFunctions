@@ -3,7 +3,7 @@
 # I update it each time I add a new functions folder
 
 # ToImport: Insert the name of the function (without .R).
-# TypeFun: Stat, Graph, or Table at the moment.
+# TypeFun: Stat, Graph, DataCleaning or Table at the moment.
 # FoldLocation: Default is my folder location, change it with yours.
 
 
@@ -19,6 +19,10 @@ Importer <- function(ToImport, TypeFun = "Stat", FoldLocation = "C:/Users/fwyck/
   }
   
   if (TypeFun == "Table"){
+    Location <- paste0(FoldLocation, "/TableFunctions/")
+  }
+  
+  if (TypeFun == "DataCleaning"){
     Location <- paste0(FoldLocation, "/TableFunctions/")
   }
 
