@@ -1,6 +1,4 @@
 ##### Import personal functions
-ToImport <- "TestFunction"
-
 Importer <- function(ToImport, TypeFun = "Stat", FoldLocation = "C:/Users/fwyck/OneDrive/Documents/Project_DS/Project_R_Function/MyFunctions"){
 
 ## Type of functions  
