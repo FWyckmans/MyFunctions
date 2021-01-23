@@ -17,6 +17,10 @@ Importer <- function(ToImport, TypeFun = "Stat", FoldLocation = "C:/Users/fwyck/
   if (TypeFun == "Graph"){
     Location <- paste0(FoldLocation, "/GraphFunctions/")
   }
+  
+  if (TypeFun == "Table"){
+    Location <- paste0(FoldLocation, "/TableFunctions/")
+  }
 
 ## Actual importer  
   for (i in length(ToImport)){
