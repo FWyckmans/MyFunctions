@@ -23,7 +23,7 @@ Importer <- function(ToImport, TypeFun = "Stat", FoldLocation = "C:/Users/fwyck/
   }
   
   if (TypeFun == "DataCleaning"){
-    Location <- paste0(FoldLocation, "/TableFunctions/")
+    Location <- paste0(FoldLocation, "/DataCleaningFunctions/")
   }
 
 ## Actual importer  
