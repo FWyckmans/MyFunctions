@@ -1,4 +1,12 @@
 InsertCol <- function(d, ToInsert, pos, name = "InsertedCol"){
+  # InsertCol() is an eaasy way to insert columns into a dataframe.
+  # d: the dataframe
+  # ToInsert: a vector to insert
+  # pos: the index where you want to see the new column, or the name of the column after which you want to insert the new col
+  # name: the name of the new column
+  
+  # !Warning! Cannot be used in first or last position!
+  
   
   # Convert pos to column index
   if (is.character(pos)){
