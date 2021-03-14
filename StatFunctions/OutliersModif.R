@@ -1,4 +1,17 @@
 OutliersModif <- function(d, Columns, Groups, Proxy = "MAD", mult = 3, as = NA, Within = F){   # Give the dataFrame, the indexes of the columns of interest as vector, the index of the column indicating the group
+  ## Function used to analyse and modify outliers based on the MAD or the SD.
+  
+  # Several arguments:
+  # d: the dataframe (tidied up!)
+  # Columns: the name or the index of the column you want to modify
+  # Groups: The name or the index of the column corresponding to the between subject variable
+  #         (only one supported, but as many levels as needed)
+  # Proxy: "MAD" if you find outliers based on the median and MAD
+  #        "SD" if you find outliers based on mean and SD.
+  # Mult: the multiplier you want to apply to the MAD/SD
+  # as: What you want to replace the outlier with (default = NA)
+  # Within: The name or the index of the column corresponding to the within subject variable
+  #         (only one supported, but as many levels as needed)
   
   ## Additionnal requirment
   # This function requires dplyr to work
@@ -19,17 +32,7 @@ OutliersModif <- function(d, Columns, Groups, Proxy = "MAD", mult = 3, as = NA, 
     Indices
   }
   
-  # Get index for VoI
-  CoI <- Columns
-  if (is.character(Columns)){
-    CoI <- FromColNameToIndex(d, Columns)
-  }
-  
-  # Get index for btwn variable column
-  if (is.character(Groups)){
-    Groups <- FromColNameToIndex(d, Groups)
-  }
-  
+  # Main function to remove outliers for each column of interest
   RemoveOutl <- function(d, ...){
     Gr = unique(d[[Groups]])
     dF <- data.frame()
@@ -46,11 +49,11 @@ OutliersModif <- function(d, Columns, Groups, Proxy = "MAD", mult = 3, as = NA, 
         if (Proxy == "MAD"){
           min = Mdn - mult*Mad
           max = Mdn + mult*Mad
-          }
+        }
         if (Proxy == "SD"){
           min = Mdn - mult*SD
           max = Mdn + mult*SD
-          }
+        }
         
         vect[vect<min] = as
         vect[vect>max] = as
@@ -61,13 +64,24 @@ OutliersModif <- function(d, Columns, Groups, Proxy = "MAD", mult = 3, as = NA, 
     return(dF)
   }
   
+  # Get index for VoI
+  CoI <- Columns
+  if (is.character(Columns)){
+    CoI <- FromColNameToIndex(d, Columns)
+  }
+  
+  # Get index for btwn variable column
+  if (is.character(Groups)){
+    Groups <- FromColNameToIndex(d, Groups)
+  }
+  
+  
   if(Within == F){
     df <- RemoveOutl(d)
   }
   
   if(!Within == F){
     # Get index for within variable
-    # Not supported yet
     if (is.character(Within)){
       Within <- FromColNameToIndex(d, Within)
     }
@@ -90,6 +104,6 @@ OutliersModif <- function(d, Columns, Groups, Proxy = "MAD", mult = 3, as = NA, 
 # Value2 <- c(201:209, 2000, 2001:2010)
 # d <- data.frame(Index, Intra, Inter, Value1, Value2)
 # dTest <- OutliersModif(d, c("Value1", "Value2"), Groups = 3, Proxy = "MAD", Within = 2)
-# dTest <- OutliersModif(d, c("Value1", "Value2"), Groups = 3, Proxy = "MAD", Within = F)
+
 
 ##### Function created by Florent Wyckmans
