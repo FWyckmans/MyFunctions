@@ -1,4 +1,4 @@
-FromNameToIndex <- function(d, CoI){
+FromColNameToIndex <- function(d, CoI){
   compt = 1
   Indices <- c()
   for (i in CoI){
