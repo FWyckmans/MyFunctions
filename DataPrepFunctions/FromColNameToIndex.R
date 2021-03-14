@@ -10,3 +10,6 @@ FromColNameToIndex <- function(d, CoI){
   }
   Indices
 }
+
+
+##### Function created by Florent Wyckmans
