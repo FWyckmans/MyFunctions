@@ -1,22 +1,22 @@
-OutliersModif <- function(d, Columns, Groups, Proxy = "MAD", mult = 3, as = NA, Within = F){   # Give the dataFrame, the indexes of the columns of interest as vector, the index of the column indicating the group
+OutliersModif <- function(d, Columns, Groups = F, Within = F, Proxy = "MAD", mult = 3, as = NA){   # Give the dataFrame, the indexes of the columns of interest as vector, the index of the column indicating the group
   ## Function used to analyse and modify outliers based on the MAD or the SD.
   
   # Several arguments:
   # d: the dataframe (tidied up!)
   # Columns: the name or the index of the column you want to modify
-  # Groups: The name or the index of the column corresponding to the between subject variable
-  #         (only one supported, but as many levels as needed)
+  # Groups: The name or the index of the columns corresponding to the between subject variable
   # Proxy: "MAD" if you find outliers based on the median and MAD
   #        "SD" if you find outliers based on mean and SD.
   # Mult: the multiplier you want to apply to the MAD/SD
   # as: What you want to replace the outlier with (default = NA)
-  # Within: The name or the index of the column corresponding to the within subject variable
-  #         (only one supported, but as many levels as needed)
+  # Within: The names or the index of the column corresponding to the within subject variable
   
   ## Additionnal requirment
   # This function requires dplyr to work
   if(!require(dplyr)){install.packages('dplyr')}
+  if(!require(tidyr)){install.packages('tidyr')}
   library(dplyr)
+  library(tidyr)
   
   # Transformation from colnames to index function
   FromColNameToIndex <- function(d, CoI){
@@ -32,7 +32,16 @@ OutliersModif <- function(d, Columns, Groups, Proxy = "MAD", mult = 3, as = NA, 
     Indices
   }
   
-  # Main function to remove outliers for each column of interest
+  AddDummyCol <- function(d, ToAdd, Val = NA){
+    for (i in ToAdd) {
+      Vect <- rep(Val, length(d[[1]]))
+      d <- cbind(d, Vect)
+      colnames(d)[colnames(d) == "Vect"] <- i
+    }
+    return(d)
+  }
+  
+  ##### Main function to remove outliers for each column of interest
   RemoveOutl <- function(d, ...){
     Gr = unique(d[[Groups]])
     dF <- data.frame()
@@ -64,27 +73,84 @@ OutliersModif <- function(d, Columns, Groups, Proxy = "MAD", mult = 3, as = NA, 
     return(dF)
   }
   
-  # Get index for VoI
-  CoI <- Columns
-  if (is.character(Columns)){
-    CoI <- FromColNameToIndex(d, Columns)
+  # Add dummy col for groups if no groups
+  dummyAdded = 0
+  if (Groups[1] == F){
+    dummyAdded = 1
+    d <- AddDummyCol(d, ToAdd = "DummyCol", Val = "Dummy")
+    Groups = length(d)
   }
   
-  # Get index for btwn variable column
+  ##### Get indexes
+  # for VoI
+  CoI <- Columns
+  if (is.character(CoI)){
+    CoI <- FromColNameToIndex(d, CoI)
+  }
+  # for Btw
   if (is.character(Groups)){
     Groups <- FromColNameToIndex(d, Groups)
   }
   
+  # for Within
+  ## Within variable handling
+  if (is.character(Within)){
+    Within <- FromColNameToIndex(d, Within)
+  }
   
-  if(Within == F){
+  ## Unite columns
+  # United the between-subject columns into one
+  grn = length(Groups)
+  MultBtwn = 0
+  if(grn > 1){
+    btwnName <- colnames(d[c(Groups)],)
+    MultBtwn = 1
+    d <- unite(d, GrCol, all_of(Groups), remove = T, sep = "_")
+    Groups <- FromColNameToIndex(d, "GrCol")
+    
+    # Change CoI indexes to match the unite
+    for(i in 1:length(CoI)){
+      if(CoI[i] > Groups){
+        CoI[i] <- CoI[i] - (grn-1)
+      }
+    }
+    # Change Within indexes to match the unite
+    if(!F %in% Within){
+      for(i in 1:length(Within)){
+        if(Within[i] > Groups){
+          Within[i] <- Within[i] - (grn-1)
+        }
+      }
+    }
+  }
+  
+  # Unite the within-subject columns into one
+  withn = length(Within)
+  Multwithin = 0
+  if(grn > 1){
+    withinName <- colnames(d[c(Within)],)
+    Multwithin = 1
+    d <- unite(d, WithinCol, all_of(Within), remove = T, sep = "_")
+    Within <- FromColNameToIndex(d, "WithinCol")
+    
+    # Change CoI indexes to match the unite
+    for(i in 1:length(CoI)){
+      if(CoI[i] > Within){
+        CoI[i] <- CoI[i] - (withn-1)
+      }
+    }
+    if(Groups > Within){
+      Groups <- Groups - (withn-1)
+    }
+  }
+  
+  # Use the RemoveOutl function
+  if(F %in% Within){
     df <- RemoveOutl(d)
   }
   
-  if(!Within == F){
+  if(!F %in% Within){
     # Get index for within variable
-    if (is.character(Within)){
-      Within <- FromColNameToIndex(d, Within)
-    }
     l <- lapply(split(d,d[Within]),function(x) RemoveOutl(x))
     nF <- c(1:length(l))
     df <- data.frame()
@@ -94,16 +160,40 @@ OutliersModif <- function(d, Columns, Groups, Proxy = "MAD", mult = 3, as = NA, 
       df <- rbind(df, dt)
     }
   }
-  df
+  
+  # Separate the united between variables column
+  if (MultBtwn == 1){
+    df <- separate(df, "GrCol", into = btwnName, sep = "_")
+  }
+  
+  # Separate the united within variables column
+  if (Multwithin == 1){
+    df <- separate(df, "WithinCol", into = withinName, sep = "_")
+  }
+  
+  # Remove the dummyCol
+  if(dummyAdded == 1){
+    df <- df[1:(length(df)-1)]
+  }
+  
+  return(df)
 }
 
 # Index <- rep(c(1:10), times = 2)
 # Intra <- rep(c("T1", "T2"), each = 10)
+# Intra2 <- rep(c("T1", "T2"), each = 10)
 # Inter <- rep(c("PG", "HC"), times = 10)
+# Inter2 <- rep(c("PG", "HC"), times = 10)
+# 
 # Value1 <- c(101:110, 2000, 102, 2001, 103, 2002, 101, 2003, 101, 2004, 2000)
 # Value2 <- c(201:209, 2000, 2001:2010)
-# d <- data.frame(Index, Intra, Inter, Value1, Value2)
-# dTest <- OutliersModif(d, c("Value1", "Value2"), Groups = 3, Proxy = "MAD", Within = 2)
+# d <- data.frame(Index, Intra, Intra2, Inter, Inter2, Value1, Value2)
+# Columns <- c("Value1", "Value2")
+# Groups = c("Inter", "Inter2")
+# Within = c("Intra", "Intra2")
+# 
+# dTest <- OutliersModif(d, c("Value1", "Value2"), Groups = c("Inter", "Inter2"), Proxy = "MAD", Within = c("Intra", "Intra2"))
+# dTest <- OutliersModif(d, c("Value1", "Value2"), Proxy = "MAD", Within = c("Intra"))
 
 
 ##### Function created by Florent Wyckmans
