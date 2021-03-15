@@ -8,7 +8,7 @@ FromColNameToIndex <- function(d, CoI){
     Indices[compt] <- index
     compt = compt + 1
   }
-  Indices
+  as.integer(Indices)
 }
 
 
