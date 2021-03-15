@@ -114,6 +114,7 @@ OutliersModif <- function(d, Columns, Groups = F, Within = F, Proxy = "MAD", mul
         CoI[i] <- CoI[i] - (grn-1)
       }
     }
+    
     # Change Within indexes to match the unite
     if(!F %in% Within){
       for(i in 1:length(Within)){
@@ -127,7 +128,7 @@ OutliersModif <- function(d, Columns, Groups = F, Within = F, Proxy = "MAD", mul
   # Unite the within-subject columns into one
   withn = length(Within)
   Multwithin = 0
-  if(grn > 1){
+  if(withn > 1){
     withinName <- colnames(d[c(Within)],)
     Multwithin = 1
     d <- unite(d, WithinCol, all_of(Within), remove = T, sep = "_")
