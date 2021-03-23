@@ -3,6 +3,7 @@
 # I update it each time I add a new functions folder
 
 # FoldLocation: AllFun folder location.
+# nRow: number of rows in the test df
 
 Importer <- function(FunctionPath = "AllFun/", nRow = 80){
   # Import functions
