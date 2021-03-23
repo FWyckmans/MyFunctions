@@ -7,3 +7,5 @@ AddDummyCol <- function(d, ToAdd, Val = NA){
   }
   return(d)
 }
+
+# FW
