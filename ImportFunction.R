@@ -33,7 +33,7 @@ Importer <- function(FunctionPath = "AllFun/", nRow = 80){
       d[[i]] <- as.factor(d[[i]])
     }
   }
-  dtest <<- d
+  dTest <<- d
   
 }
 
