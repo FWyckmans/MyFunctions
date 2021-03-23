@@ -54,7 +54,7 @@ DescrFrame <- function(d, Btwn = NA){
   
   ##### Specific function
   # Compute mean or n according to the type of subject
-  FinalFrame <- function(d){
+  FinalFrame <- function(...){
     Descriptive <- rep(NA, each = (length(d)-1))
     for (i in 1:(length(d)-1)) {
       if (is.factor(d[[i]])){
