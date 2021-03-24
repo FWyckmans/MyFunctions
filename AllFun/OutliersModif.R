@@ -67,11 +67,11 @@ OutliersModif <- function(d, Columns, Groups = F, Within = F, Proxy = "MAD", mul
         vect[vect>max] = as
         dTemp[,i] <- vect
       }
-      # Print outliers
-      ind <- match(as, dTemp)
-      for (i in 1:length(ind)) {
-        cat(paste0("NS ", ind[i], " in group", Gr[g], " is an outlier for ", colnames(dTemp), "\n"))
-      }
+      # # Print outliers
+      # ind <- match(as, dTemp)
+      # for (i in 1:length(ind)) {
+      #   cat(paste0("NS ", ind[i], " in group", Gr[g], " is an outlier for ", colnames(dTemp), "\n"))
+      # }
       
       dF <- rbind(dF, dTemp)
     }
