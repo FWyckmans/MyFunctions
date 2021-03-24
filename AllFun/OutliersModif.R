@@ -45,7 +45,6 @@ OutliersModif <- function(d, Columns, Groups = F, Within = F, Proxy = "MAD", mul
   RemoveOutl <- function(d, ...){
     Gr = unique(d[[Groups]])
     dF <- data.frame()
-    
     for (g in c(1:length(Gr))){
       dTemp <- filter(d, d[,Groups] == Gr[g])
       
@@ -68,6 +67,12 @@ OutliersModif <- function(d, Columns, Groups = F, Within = F, Proxy = "MAD", mul
         vect[vect>max] = as
         dTemp[,i] <- vect
       }
+      # Print outliers
+      ind <- match(as, dTemp)
+      for (i in 1:length(ind)) {
+        cat(paste0("NS ", ind[i], " in group", Gr[g], " is an outlier for ", colnames(dTemp), "\n"))
+      }
+      
       dF <- rbind(dF, dTemp)
     }
     return(dF)
@@ -180,21 +185,5 @@ OutliersModif <- function(d, Columns, Groups = F, Within = F, Proxy = "MAD", mul
   return(df)
 }
 
-# Index <- rep(c(1:10), times = 2)
-# Intra <- rep(c("T1", "T2"), each = 10)
-# Intra2 <- rep(c("T1", "T2"), each = 10)
-# Inter <- rep(c("PG", "HC"), times = 10)
-# Inter2 <- rep(c("PG", "HC"), times = 10)
-# 
-# Value1 <- c(101:110, 2000, 102, 2001, 103, 2002, 101, 2003, 101, 2004, 2000)
-# Value2 <- c(201:209, 2000, 2001:2010)
-# d <- data.frame(Index, Intra, Intra2, Inter, Inter2, Value1, Value2)
-# Columns <- c("Value1", "Value2")
-# Groups = c("Inter", "Inter2")
-# Within = c("Intra", "Intra2")
-# 
-# dTest <- OutliersModif(d, c("Value1", "Value2"), Groups = c("Inter", "Inter2"), Proxy = "MAD", Within = c("Intra", "Intra2"))
-# dTest <- OutliersModif(d, c("Value1", "Value2"), Proxy = "MAD", Within = c("Intra"))
-
-
+dt <- OutliersModif(dTest, c("Val2", "Val3"), Groups = c("Btwn1", "Btwn2"))
 ##### Function created by Florent Wyckmans
