@@ -25,5 +25,5 @@ TestDF <- function(nRow = 80){
   dTest <<- d
   
 }
-
+TestDF()
 # FW
