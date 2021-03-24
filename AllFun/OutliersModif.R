@@ -185,5 +185,5 @@ OutliersModif <- function(d, Columns, Groups = F, Within = F, Proxy = "MAD", mul
   return(df)
 }
 
-dt <- OutliersModif(dTest, c("Val2", "Val3"), Groups = c("Btwn1", "Btwn2"))
+# dt <- OutliersModif(dTest, c("Val2", "Val3"), Groups = c("Btwn1", "Btwn2"))
 ##### Function created by Florent Wyckmans
